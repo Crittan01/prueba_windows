@@ -6,3 +6,22 @@
   tasks:
     - name: Validar conexión con PC
       ansible.windows.win_ping:
+
+    - name: Recuperar informacion de Idioma (Informativo)
+      ansible.windows.win_shell: |
+        (Get-WinSystemLocale).DisplayName
+      register: lang_out
+      changed_when: false
+
+    - name: Set Fact Idioma
+      ansible.builtin.set_fact:
+        language: "{{ lang_out.stdout | trim }}"
+
+    - name: Validacion de Sistema Operativo
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family == "Windows"
+          - ansible_distribution_major_version == "10"
+        success_msg: "El Sistema Operativo SI es Windows 10 [ {{ language }} ]"
+        fail_msg: "El Sistema Operativo NO es Windows 10"
+      register: so_out
