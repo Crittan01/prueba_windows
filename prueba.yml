@@ -1,0 +1,8 @@
+---
+- name: Proyecto de Migracion Windows 10 a 11
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Validar conexión con PC
+      ansible.windows.win_ping:
